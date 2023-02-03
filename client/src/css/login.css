@@ -12,7 +12,7 @@ h1{
 }
 form{
   background-color: #24252b;
-  border-top: 4px rgb(180, 129, 0) solid;
+  border-top: 4px rgb(228, 163, 0) solid;
   max-width: 50vh;
   padding:20px;
   margin:0 auto;
@@ -35,7 +35,7 @@ input[type=text]:hover, input[type=password]:hover{
 }
 input[type=text]:focus, input[type=password]:focus{
   outline:none;
-  border: 2px solid rgb(255, 183, 1) ;
+  border: 1px solid rgb(255, 183, 1) ;
 }
 label{
   width: 55%;

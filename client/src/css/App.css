@@ -1,11 +1,18 @@
-.App {
-  text-align: center;
+/* body{
+  background-color: #282c34;
+
 }
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: #24252b;
+  padding:20px;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.397);
   font-size: calc(10px + 2vmin);
   color: white;
+  display: flex;
 }
+button{
+  outline:none;
+  color:white;
+  background-color: #24252b;
+  border:none
+} */

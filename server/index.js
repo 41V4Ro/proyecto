@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hola desde el servidor!" });
+  res.json({ message: "Hola desde el servidor!!" });
 })
 app.post("/register", (req, res)=>{
     const {email,username,password} = req.body;

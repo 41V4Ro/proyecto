@@ -1,18 +1,19 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import Axios from "axios";
-import "../css/login.css";
+import { useNavigate } from 'react-router-dom';
+/* import "../css/login.css"; */
 
 export const Register = ()=>{
-
-    const [formData, setFormData] = useState({email:"",username:"",password:"",repeat:""});
-    const inputChange = ({target})=>{
-      const {name, value} = target;
-      setFormData({
-        ...formData,
-        [name]:value
-      })
-    }
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({email:"",username:"",password:"",repeat:""});
+  const inputChange = ({target})=>{
+    const {name, value} = target;
+    setFormData({
+      ...formData,
+      [name]:value
+    })
+  }
     useEffect(()=>{
       comprobar();
     });
@@ -23,7 +24,8 @@ export const Register = ()=>{
         username: formData.username,
         password: formData.password
       }).then(response=>{
-        console.log(response)
+        console.log(response);
+        navigate('/login');
       })
     }
     

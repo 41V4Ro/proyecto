@@ -1,18 +1,34 @@
-/* body{
+.App body{
   background-color: #282c34;
 
 }
-.App-header {
+.App header {
   background-color: #24252b;
-  padding:20px;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.397);
   font-size: calc(10px + 2vmin);
   color: white;
   display: flex;
+  align-items: center;
+  padding:10px 20px;
 }
-button{
+.App-header div{
+  display: flex;
+}
+.App button{
   outline:none;
   color:white;
   background-color: #24252b;
-  border:none
-} */
+  border:none;
+  font-size: calc(8px + 2vmin);
+}
+.App main>div{
+  width: 70vh;
+  margin:0 auto;
+}
+.App main>div>div{
+  display: flex;
+  align-items: center;
+}
+.App main>div>div> h1{
+  margin-right: 20px;
+}

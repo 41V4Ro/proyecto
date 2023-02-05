@@ -37,7 +37,7 @@ export const Register = ()=>{
         }
     }
     return (
-        <>
+        <div className="login-container">
       <header>
         <h1>Crear cuenta</h1>
       </header>
@@ -83,7 +83,7 @@ export const Register = ()=>{
           <a href="/login">Iniciar sesión</a>
         </form>
       </main>
-    </>
+    </div>
     )
     
 }

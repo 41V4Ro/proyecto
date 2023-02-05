@@ -30,7 +30,7 @@ export const Login = () => {
     
   }
   return (
-    <>
+    <div className='login-container'>
       <header>
         <h1>Iniciar sesión</h1>
       </header>
@@ -58,6 +58,6 @@ export const Login = () => {
           <a href="/register">Crear cuenta</a>
         </form>
       </main>
-    </>
+    </div>
   )
 }

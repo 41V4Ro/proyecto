@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Axios from "axios";
 import "../css/login.css";
+
 export const Login = () => {
   let navigate = useNavigate();
   let [formData, setFormData] = useState({username:"",password:""});
@@ -23,7 +24,7 @@ export const Login = () => {
         localStorage.setItem("nombre",response.data.username);
         navigate("/");
       }else{
-        alert("Nombre de usuario o contraseña incorrectos.");
+
       }
       document.querySelector("form").reset();
     }).catch(error=>console.log(error));

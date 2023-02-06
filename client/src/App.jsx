@@ -1,8 +1,9 @@
 import {useRoutes} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect} from 'react';
+import { useState} from 'react';
 import {Login} from "./pages/Login";
 import {Register} from "./pages/Register";
+import {BsFillPersonFill,BsBoxArrowLeft} from "react-icons/bs";
 import "./css/App.css";
 function App() {
   let routes = useRoutes([
@@ -13,7 +14,9 @@ function App() {
   return routes;  
 }
 function Home(){
-  /* let navigate = useNavigate(); */
+  let navigate = useNavigate();
+  
+
   const words = [
     "árbol", "animal", "avisan","amarillo","amistad","antena",
     "brazo", "bicicleta", "burro","birra","brutal","bestias",
@@ -24,11 +27,11 @@ function Home(){
     "grande","gritos","grulla", "gazpacho","gamba",
     "habían","hombro", "hebras", "hambre","híbrido",
     "ignorante","ímpetu", "independencia", "idea", "inferior",
-    "jabaí","jalapeño","jugadores", "jamón","justa",
+    "jabalí","jalapeño","jugadores", "jamón","justa", "jugado", "japón",
     "kilómetro","karaoke", "kétchup", 
     "limonada","linterna","luciérnaga", "láser","lista",
     "madre","muertos","mirar", "música","mentira",
-    "navidad","nogal","noche",
+    "navidad","nogal","noche", "noche", "nietos",
     "ñu","ñora",
     "ópera","ocioso","ombligo",
     "pirámide","palabras","puerro",
@@ -39,13 +42,16 @@ function Home(){
     "uva","única","unidad",
     "viento","verde","valioso","vida","vivo",
     "web",
-    "xilófono", "xenofobia",
+    "xilófono",
     "yema","yo","yendo",
     "zapato","zumo","zote"
   ]
+  /* let [previousWord, setPreviousWord] = useState(""); */
   let [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
   let [nextWord, setNextWord] = useState(words[Math.floor(Math.random() * words.length)])
   let [userInput, setUserInput] = useState("");
+  let [correct, setCorrect] = useState(0);
+  let [incorrect, setIncorrect] = useState(0);
   let [score, setScore] = useState(0);
   let [key, setKey] = useState("");
 
@@ -56,7 +62,13 @@ function Home(){
     setUserInput(event.target.value);
     if(key === " "){
       if (event.target.value.slice(0, event.target.value.length -1) === word) {
-        setScore(score + 1);
+        setCorrect(correct +1);
+        /* setPreviousWord(word); */
+        setWord(nextWord);
+        setNextWord(words[Math.floor(Math.random() * words.length)])
+        setUserInput('');
+      }else{
+        setIncorrect(incorrect +1);
         setWord(nextWord);
         setNextWord(words[Math.floor(Math.random() * words.length)])
         setUserInput('');
@@ -64,21 +76,29 @@ function Home(){
     }
     
   };
+  const logOut = ()=>{
+    localStorage.removeItem("nombre");
+    navigate("/login");
+  }
+  let user = localStorage.getItem("nombre") ?<><button>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><a href='/login'>Log out <BsBoxArrowLeft/></a></>: <button onClick={logOut}>Login</button>;
+  
   return (
     <div className="App">
       <header className="App-header">
          <h1>Mecanografía</h1>
         <div>
+          {user}          
         </div>
       </header>
       <main>
         <div>
           <div>
+            {/* <h3>{previousWord}</h3> */}
             <h1>{word}</h1>
             <h3>{nextWord}</h3>
           </div>
           <input type="text" value={userInput} onKeyDown={keyChange} onChange={compare}/>
-          <p>Puntos: {score}</p>
+          <p>Bien: {correct} Mal: {incorrect}</p>
         </div>
       </main>
     </div>

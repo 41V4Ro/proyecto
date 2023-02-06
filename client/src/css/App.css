@@ -11,24 +11,55 @@
   align-items: center;
   padding:10px 20px;
 }
+.App header h1{
+  width: 70%;
+}
 .App-header div{
   display: flex;
+  
 }
+.App a{
+  text-decoration: none;
+  color:white;
+}
+.App a:hover{
+  text-decoration: none;
+  color:rgb(150, 150, 150);
+}
+
 .App button{
   outline:none;
   color:white;
-  background-color: #24252b;
+  background:none;
   border:none;
   font-size: calc(8px + 2vmin);
 }
+.App button:hover{
+  color:rgb(150, 150, 150);
+}
 .App main>div{
   width: 70vh;
-  margin:0 auto;
+  margin-left: 5vh;
 }
 .App main>div>div{
   display: flex;
   align-items: center;
+  
 }
 .App main>div>div> h1{
   margin-right: 20px;
+}
+.App main>div>div> h3{
+  margin-right: 20px;
+  
+}
+.App input{
+  width: 50%;
+  display: block;
+  margin-bottom: 20px;
+  padding:10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
 }

@@ -24,7 +24,6 @@ export const Register = ()=>{
         username: formData.username,
         password: formData.password
       }).then(response=>{
-        console.log(response);
         navigate('/login');
       })
     }

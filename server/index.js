@@ -2,12 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
-
-const PORT  = process.env.PORT || 3001;
+const bodyparser = require("body-parser");
 
 const app = express();
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended:true}));
 
 let con = mysql.createConnection({
     host:"localhost",
@@ -16,9 +16,15 @@ let con = mysql.createConnection({
     database:"mecanografia"
 });
 
+app.listen(3001, ()=>{
+    console.log(`Server listening on 3001`)
+});
+
 app.get("/", (req, res) => {
   res.json({ message: "Hola desde el servidor!!" });
-})
+});
+
+
 app.post("/register", (req, res)=>{
     const {email,username,password} = req.body;
     bcrypt.hash(password, 10, (errorHash,hash)=>{
@@ -32,7 +38,7 @@ app.post("/register", (req, res)=>{
                     res.send({error:errorUser});
                 }else{
                     con.query(
-                        `INSERT INTO stats (gamesplayed, highestscore, username) VALUES (0, 0, '${username}');`,
+                        `INSERT INTO stats (gamesplayed, bestscore, username) VALUES (0, 0, '${username}');`,
                         (errorStats)=>{
                             if(errorStats){
                                 res.send({error:errorStats});
@@ -69,29 +75,29 @@ app.post("/login", (req, res)=>{
         }
     );
 })
-
-app.listen(PORT, ()=>{
-    console.log(`Server listening on ${PORT}`)
+app.post("/updatestats", (req, res)=>{
+    const {username, score} = req.body;
+    con.query(`UPDATE stats SET bestscore = ${score} where bestscore < ${score} and username = '${username}'`,(err,result)=>{
+        if(err){
+            res.send({error: err})
+        }else{
+            con.query(`UPDATE stats SET gamesplayed = gamesplayed +1 where username = '${username}'`,
+            (err,result)=>{
+                if(err){
+                    res.send({error: "error"})
+                }else{
+                    res.send({exito: `${result}`})
+                }
+            })
+        }
+    })    
 })
-
-
-
-/* function createDB(){
-    con.query("CREATE DATABASE IF NOT EXISTS mecanografia ", (err,result)=>{
-        if(err) throw err;
-        console.log("bd creada");
-    })
-}
-function createTable(tableName){
-    let statement = `CREATE TABLE IF NOT EXISTS ${tableName} (
-                        id int primary key auto_increment,
-                        email varchar(255) not null,
-                        username varchar(255) not null,
-                        password varchar(255) not null
-                    )`;    
-    con.query(statement, error=>{
-        if(error){
-            throw error;
+app.get("/stats",(req,res)=>{
+    con.query("SELECT gamesplayed, bestscore, username FROM stats ORDER BY bestscore DESC", (err,result)=>{
+        if(err){
+            res.send({error:err})
+        }else{
+            res.send({stats: result})
         }
     })
-} */
+})

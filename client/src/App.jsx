@@ -1,10 +1,12 @@
 import {useRoutes} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useState} from 'react';
+import { useEffect, useState} from 'react';
 import {Login} from "./pages/Login";
 import {Register} from "./pages/Register";
 import {BsFillPersonFill,BsBoxArrowLeft} from "react-icons/bs";
 import "./css/App.css";
+import Axios from "axios";
+
 function App() {
   let routes = useRoutes([
     {path:'/', element: <Home />},
@@ -47,51 +49,63 @@ function Home(){
     "zapato","zumo","zote"
   ]
   
-  /* let [previousWord, setPreviousWord] = useState(""); */
-  let [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
-  let [nextWord, setNextWord] = useState(words[Math.floor(Math.random() * words.length)])
+  const randomWord = () => {
+    return words[Math.floor(Math.random() * words.length)];
+  }
+
+  let [word, setWord] = useState(randomWord());
+  let [nextWord, setNextWord] = useState(randomWord())
   let [userInput, setUserInput] = useState("");
   let [correct, setCorrect] = useState(0);
   let [incorrect, setIncorrect] = useState(0);
   let [score, setScore] = useState(0);
   let [key, setKey] = useState("");
 
-
-  const keyChange = event =>{ // detectar las teclas pulsadas
+  const keyChange = event =>{ 
     setKey(event.key);
   }
+  
 
-  //contador
-  let [time, setTime] = useState(60);
- 
-  let [timer, setTimer] = useState(undefined);
-  const startGame = () =>{
+  const endGame = ()=>{
+    Axios.post("http://localhost:3001/updatestats",{
+      username:localStorage.getItem("nombre"),
+      score: correct - incorrect
+    })
+  }
+  
+  let [time, setTime] = useState(60); 
+  let timer = undefined;
+  useEffect(()=>{
+    if(time<1){
+      endGame();
+    }
+  },[time])
+
+  const startGame = () =>{    
+  const input = document.querySelector("input"); 
+    input.disabled = false;
+    input.focus();
+    
     clearInterval(timer);
-    const input = document.querySelector("input");
-    console.log(timer)
-    setTimer(setInterval(()=>{
-      input.disabled = false;
-      input.focus();
-      
+    timer = setInterval(()=>{
       setTime(time=>{
         if(time <1){
           input.disabled = true;
-          clearInterval(timer);
+          clearInterval(timer);         
           return time;
         }else{
           return time -1;
         }
-      });
-      
-    },1000)) 
+      });      
+    },1000)
   }
   const restartGame = ()=>{
     setUserInput("");
     setTime(60);
     setCorrect(0);
     setIncorrect(0);
-    setWord(words[Math.floor(Math.random() * words.length)])
-    setNextWord(words[Math.floor(Math.random() * words.length)])
+    setWord(randomWord());
+    setNextWord(randomWord());
     startGame();
   }
   
@@ -100,25 +114,26 @@ function Home(){
     if(key === " "){
       if (event.target.value.slice(0, event.target.value.length -1) === word) {
         setCorrect(correct +1);
-        /* setPreviousWord(word); */
         setWord(nextWord);
-        setNextWord(words[Math.floor(Math.random() * words.length)])
+        setNextWord(randomWord())
         setUserInput('');
       }else{
         setIncorrect(incorrect +1);
         setWord(nextWord);
-        setNextWord(words[Math.floor(Math.random() * words.length)])
+        setNextWord(randomWord())
         setUserInput('');
       }
-    }
-    
+    }    
   };
+
   const logOut = ()=>{
     localStorage.removeItem("nombre");
     navigate("/login");
   }
-  let user = localStorage.getItem("nombre") ?<><button>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><a onClick={logOut} href='/login'>Cerrar sesión <BsBoxArrowLeft/></a></>: <button >Login</button>;
-  
+  let user = localStorage.getItem("nombre") ?<><button>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><a onClick={logOut}>Cerrar sesión <BsBoxArrowLeft/></a></>: <a href='/login' >Login</a>;
+  const recibirDatos = ()=>{
+    Axios.get("http://localhost:3001/stats").then(response=>console.log(response))
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -130,14 +145,17 @@ function Home(){
       <main>
         <div>
           <div>
-            {/* <h3>{previousWord}</h3> */}
-            <h1>{word}</h1>
+            <h2>{word}</h2>
             <h3>{nextWord}</h3>
+          </div>
+          <div>
+
           </div>
           <input disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
           <button onClick={startGame}>Iniciar</button>
           <button onClick={restartGame}>Reiniciar</button>
           <p>Bien: {correct} Mal: {incorrect} Tiempo: {time}</p>
+          <button onClick={recibirDatos}>asdf</button>
         </div>
       </main>
     </div>

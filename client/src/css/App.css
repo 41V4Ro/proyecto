@@ -9,10 +9,9 @@
   color: white;
   display: flex;
   align-items: center;
-  padding:10px 20px;
 }
 .App header h1{
-  width: 60%;
+  width: 70%;
 }
 
 .App-header div{
@@ -45,9 +44,14 @@
 .App main>div>div{
   display: flex;
   align-items: center;
-  
+  border-radius: 5px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  background-color: #a0a0a06b;
+
 }
-.App main>div>div> h1{
+.App main>div>div> h2{
+  margin-left: 20px;
   margin-right: 20px;
 }
 .App main>div>div> h3{

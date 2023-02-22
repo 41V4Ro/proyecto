@@ -23,8 +23,6 @@ export const Login = () => {
       if(response.data.username){
         localStorage.setItem("nombre",response.data.username);
         navigate("/");
-      }else{
-
       }
       document.querySelector("form").reset();
     }).catch(error=>console.log(error));

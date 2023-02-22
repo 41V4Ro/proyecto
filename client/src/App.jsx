@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState} from 'react';
 import {Login} from "./pages/Login";
 import {Register} from "./pages/Register";
-import {BsFillPersonFill,BsBoxArrowLeft} from "react-icons/bs";
+import {BsFillPersonFill,BsBoxArrowLeft,BsFillCaretRightSquareFill} from "react-icons/bs";
 import "./css/App.css";
 import Axios from "axios";
 
@@ -48,9 +48,18 @@ function Home(){
     "yema","yo","yendo",
     "zapato","zumo","zote"
   ]
+  const wordsEng = ["hello"]
   
+  let [lenguage,setLenguage] = useState("Español")
+  const changeLenguage = event =>{
+    setLenguage(event.target.value);
+  }
   const randomWord = () => {
-    return words[Math.floor(Math.random() * words.length)];
+    if(lenguage === "Español"){
+      return words[Math.floor(Math.random() * words.length)];
+    }else{
+      return wordsEng[Math.floor(Math.random() * words.length)];
+    }
   }
 
   let [word, setWord] = useState(randomWord());
@@ -64,7 +73,6 @@ function Home(){
   const keyChange = event =>{ 
     setKey(event.key);
   }
-  
 
   const endGame = ()=>{
     Axios.post("http://localhost:3001/updatestats",{
@@ -74,7 +82,8 @@ function Home(){
   }
   
   let [time, setTime] = useState(60); 
-  let timer = undefined;
+  let [timer,setTimer] = useState(0);
+  
   useEffect(()=>{
     if(time<1){
       endGame();
@@ -82,22 +91,26 @@ function Home(){
   },[time])
 
   const startGame = () =>{    
-  const input = document.querySelector("input"); 
+    const input = document.querySelector("input"); 
     input.disabled = false;
     input.focus();
-    
-    clearInterval(timer);
-    timer = setInterval(()=>{
-      setTime(time=>{
-        if(time <1){
-          input.disabled = true;
-          clearInterval(timer);         
-          return time;
-        }else{
-          return time -1;
-        }
-      });      
-    },1000)
+    restartGame();
+
+    setTimer(timer=>{
+      clearInterval(timer);
+      timer = setInterval(()=>{
+        setTime(time=>{
+          if(time <1){
+            input.disabled = true;
+            clearInterval(timer);
+            return time;
+          }else{
+            return time -1;
+          }
+        });      
+      },1000)
+      return timer;
+    })
   }
   const restartGame = ()=>{
     setUserInput("");
@@ -106,7 +119,6 @@ function Home(){
     setIncorrect(0);
     setWord(randomWord());
     setNextWord(randomWord());
-    startGame();
   }
   
   const compare = event => {
@@ -115,12 +127,12 @@ function Home(){
       if (event.target.value.slice(0, event.target.value.length -1) === word) {
         setCorrect(correct +1);
         setWord(nextWord);
-        setNextWord(randomWord())
+        setNextWord(randomWord());
         setUserInput('');
       }else{
         setIncorrect(incorrect +1);
         setWord(nextWord);
-        setNextWord(randomWord())
+        setNextWord(randomWord());
         setUserInput('');
       }
     }    
@@ -130,32 +142,40 @@ function Home(){
     localStorage.removeItem("nombre");
     navigate("/login");
   }
-  let user = localStorage.getItem("nombre") ?<><button>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><a onClick={logOut}>Cerrar sesión <BsBoxArrowLeft/></a></>: <a href='/login' >Login</a>;
+  let user = localStorage.getItem("nombre") ?<><button className='me-3 col'>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><button className='col' onClick={logOut}>Salir <BsBoxArrowLeft/></button></>: <a href='/login' >Login</a>;
   const recibirDatos = ()=>{
     Axios.get("http://localhost:3001/stats").then(response=>console.log(response))
   }
   return (
     <div className="App">
-      <header className="App-header">
-         <h1>Mecanografía</h1>
-        <div>
-          {user}          
-        </div>
+      <header className="App-header row d-flex">
+         <h1 className='col d-block'>Mecanografía</h1>
+         <div className='col d-flex'>
+          {user} 
+         </div>
       </header>
-      <main>
-        <div>
-          <div>
-            <h2>{word}</h2>
-            <h3>{nextWord}</h3>
+      <main className='container'>
+        <div className="row">
+          <div className="col-2 idioma">
+            <select onChange={changeLenguage} className="mt-3">
+              <option value="Español">Español</option>
+              <option value="English">English</option>
+            </select>
+            <p className='mt-5'>Tiempo: {time}</p>
           </div>
-          <div>
-
+          <div className="col-12 col-sm-9">
+            <div className='row  p-2'>
+              <div className='col-12 col-sm-9  p-2 palabras'>
+              <h1 className='me-3 palabra'>{word}</h1>
+              <h3>{nextWord}</h3>
+            </div>
           </div>
-          <input disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
-          <button onClick={startGame}>Iniciar</button>
-          <button onClick={restartGame}>Reiniciar</button>
-          <p>Bien: {correct} Mal: {incorrect} Tiempo: {time}</p>
-          <button onClick={recibirDatos}>asdf</button>
+                  
+          <div className='row p-2'>
+            <input className='col-7 col-sm-5' disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
+            <button className='col-5 col-sm-2' onClick={startGame}>Iniciar<BsFillCaretRightSquareFill className='ms-2'/></button>  
+          </div>
+          </div>
         </div>
       </main>
     </div>

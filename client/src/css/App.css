@@ -7,17 +7,10 @@
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.397);
   font-size: calc(10px + 2vmin);
   color: white;
-  display: flex;
   align-items: center;
-}
-.App header h1{
-  width: 70%;
+  padding:5px
 }
 
-.App-header div{
-  display: flex;
-  
-}
 .App a{
   text-decoration: none;
   color:white;
@@ -32,39 +25,46 @@
   color:white;
   background:none;
   border:none;
-  font-size: calc(8px + 2vmin);
+  font-size: calc(10px + 2vmin);
+  height: 50px;
 }
+
 .App button:hover{
   color:rgb(150, 150, 150);
 }
-.App main>div{
-  width: 70vh;
-  margin-left: 5vh;
+.App .idioma{
+  align-items: center;
+  margin-top: 50px;
+
 }
-.App main>div>div{
+.App .palabras{
   display: flex;
   align-items: center;
   border-radius: 5px;
   margin-top: 50px;
   margin-bottom: 20px;
   background-color: #a0a0a06b;
-
 }
-.App main>div>div> h2{
-  margin-left: 20px;
-  margin-right: 20px;
+.App select {
+  background-color: white;
+  border:none;
+  border-radius: 5px;
 }
-.App main>div>div> h3{
-  margin-right: 20px;
-  
+.App select:hover {
+  background-color: rgb(216, 216, 216);
+  border:none;
+  border-radius: 5px;
 }
 .App input{
-  width: 50%;
-  display: block;
   margin-bottom: 20px;
   padding:10px;
   margin-bottom: 20px;
   border-radius: 4px;
   border: none;
   font-size: 14px;
+}
+.palabra{
+  background-color: rgba(231, 231, 231, 0.233);
+  padding:5px;
+  border-radius: 5px;
 }

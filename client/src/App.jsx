@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState} from 'react';
 import {Login} from "./pages/Login";
 import {Register} from "./pages/Register";
+import { Stats } from './components/Stats';
 import {BsFillPersonFill,BsBoxArrowLeft,BsFillCaretRightSquareFill} from "react-icons/bs";
 import "./css/App.css";
 import Axios from "axios";
@@ -34,7 +35,7 @@ function Home(){
     "limonada","linterna","luciérnaga", "láser","lista","lluvia","lápiz","libro","luna","leer","lagarto","lámpara","lujoso",
     "madre","muertos","mirar", "música","mentira","marisco","mueble","manzana","misterio","magia",
     "navidad","nogal","noche", "noche", "nietos","naranja","nación","nido","nuevo","nacimiento",
-    "ñu","ñora",
+    "ñu",
     "ópera","ocioso","ombligo","ojo","otoño","oeste","oportunidad","orden",
     "pirámide","palabras","puerro", "pájaro","papel","paz","página","planeta","pulgar","playa","pelea",
     "queso","quieres","quebrar", "quinto","qué",
@@ -48,7 +49,7 @@ function Home(){
     "yema","yo","yendo",
     "zapato","zumo","zote"
   ]
-  const wordsEng = ["hello"]
+  const wordsEng = ["hello","apple"]
   
   let [lenguage,setLenguage] = useState("Español")
   const changeLenguage = event =>{
@@ -58,7 +59,7 @@ function Home(){
     if(lenguage === "Español"){
       return words[Math.floor(Math.random() * words.length)];
     }else{
-      return wordsEng[Math.floor(Math.random() * words.length)];
+      return wordsEng[Math.floor(Math.random() * wordsEng.length)];
     }
   }
 
@@ -75,10 +76,20 @@ function Home(){
   }
 
   const endGame = ()=>{
-    Axios.post("http://localhost:3001/updatestats",{
-      username:localStorage.getItem("nombre"),
-      score: correct - incorrect
-    })
+    const token = sessionStorage.getItem("token");
+    if(token){
+      Axios.post("http://localhost:3001/updatestats",{
+        username:sessionStorage.getItem("nombre"),
+        score: correct - incorrect
+      },{
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      })
+    }else{
+      console.log("Inicie sesión para guardar sus resultados.")
+    }
+    
   }
   
   let [time, setTime] = useState(60); 
@@ -139,44 +150,55 @@ function Home(){
   };
 
   const logOut = ()=>{
-    localStorage.removeItem("nombre");
+    sessionStorage.removeItem("nombre");
+    sessionStorage.removeItem("token");
     navigate("/login");
   }
-  let user = localStorage.getItem("nombre") ?<><button className='me-3 col'>{localStorage.getItem("nombre")} <BsFillPersonFill/> </button><button className='col' onClick={logOut}>Salir <BsBoxArrowLeft/></button></>: <a href='/login' >Login</a>;
-  const recibirDatos = ()=>{
-    Axios.get("http://localhost:3001/stats").then(response=>console.log(response))
-  }
+  let user = sessionStorage.getItem("token") ?<><button>{sessionStorage.getItem("nombre")} <BsFillPersonFill/> </button><button onClick={logOut}>Salir <BsBoxArrowLeft/></button></>: <a href='/login' >Login</a>;
+
   return (
     <div className="App">
-      <header className="App-header row d-flex">
-         <h1 className='col d-block'>Mecanografía</h1>
-         <div className='col d-flex'>
+      <header className="App-header row d-flex ">
+         <h1 className='col d-block ms-md-5'>Mecanografía</h1>
+         <div className='col d-flex justify-content-end me-md-5'>
           {user} 
          </div>
       </header>
-      <main className='container'>
-        <div className="row">
-          <div className="col-2 idioma">
-            <select onChange={changeLenguage} className="mt-3">
+      <main >
+        <div className="row m-1 m-sm-5">          
+          <div className="col-12 col-md-8">
+            <select onChange={changeLenguage} className="mt-5">
               <option value="Español">Español</option>
               <option value="English">English</option>
-            </select>
-            <p className='mt-5'>Tiempo: {time}</p>
-          </div>
-          <div className="col-12 col-sm-9">
+            </select>Tiempo: {time} 
+
             <div className='row  p-2'>
               <div className='col-12 col-sm-9  p-2 palabras'>
               <h1 className='me-3 palabra'>{word}</h1>
               <h3>{nextWord}</h3>
+              </div>
+            </div>
+                  
+            <div className='row p-2'>
+              <input className='col-7 col-sm-5' disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
+              <button className='col-5 col-sm-4' onClick={startGame}>Iniciar<BsFillCaretRightSquareFill className='ms-2'/> </button>  
+
             </div>
           </div>
-                  
-          <div className='row p-2'>
-            <input className='col-7 col-sm-5' disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
-            <button className='col-5 col-sm-2' onClick={startGame}>Iniciar<BsFillCaretRightSquareFill className='ms-2'/></button>  
-          </div>
+          <div className="col-12 col-md-4 mt-5 puntuacion">
+            <div className="row puntuacionT">
+              <h3>Puntuación</h3>
+            </div>
+            <div className="row">
+              <p>Correctas: {correct}</p>
+              <p>Incorrectas: {incorrect}</p>
+            </div>
+            <div className="row">
+              <Stats></Stats>
+            </div>
           </div>
         </div>
+        
       </main>
     </div>
   );

@@ -41,7 +41,6 @@
   display: flex;
   align-items: center;
   border-radius: 5px;
-  margin-top: 50px;
   margin-bottom: 20px;
   background-color: #a0a0a06b;
 }
@@ -49,6 +48,7 @@
   background-color: white;
   border:none;
   border-radius: 5px;
+  margin-right: 20px;
 }
 .App select:hover {
   background-color: rgb(216, 216, 216);
@@ -67,4 +67,43 @@
   background-color: rgba(231, 231, 231, 0.233);
   padding:5px;
   border-radius: 5px;
+}
+.puntuacion{
+  border-radius: 5px;
+  text-align: center;
+}
+.puntuacionT{
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color:rgb(198, 142, 1);
+  
+  color:#282c34;
+  padding-top:5px;
+}
+.puntuacion h3{
+  font-weight: bold;
+}
+.puntuacion div:nth-of-type(2){
+  font-size: 20px;
+  background-color:rgb(217, 217, 217);
+  color:black;
+  padding:5px;
+}
+.stats{
+  background-color:rgb(217, 217, 217);
+  margin-top: 100px;
+  color:#24252b;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.stats table{
+  font-size: 20px;
+}
+.stats h3{
+  background-color:rgb(198, 142, 1);
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  padding:5px;
 }

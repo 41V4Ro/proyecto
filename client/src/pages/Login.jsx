@@ -20,8 +20,9 @@ export const Login = () => {
       username: formData.username,
       password: formData.password
     }).then(response=>{
-      if(response.data.username){
-        localStorage.setItem("nombre",response.data.username);
+      if(response.status === 200){
+        sessionStorage.setItem("nombre",response.data.username);
+        sessionStorage.setItem("token",response.data.token);
         navigate("/");
       }
       document.querySelector("form").reset();

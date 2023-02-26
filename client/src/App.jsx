@@ -131,7 +131,7 @@ function Home(){
     setWord(randomWord());
     setNextWord(randomWord());
   }
-  
+ 
   const compare = event => {
     setUserInput(event.target.value);
     if(key === " "){

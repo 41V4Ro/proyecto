@@ -23,7 +23,8 @@ export const Register = ()=>{
         email: formData.email,
         username: formData.username,
         password: formData.password
-      }).then(response=>{
+      }).then(()=>{
+        alert("Cuenta creada correctamente")
         navigate('/login');
       })
     }
@@ -44,7 +45,7 @@ export const Register = ()=>{
         <form onSubmit={submit}>
         <label htmlFor="email">Correo</label>
           <input 
-            type="text" 
+            type="email" 
             name="email" 
             id="email" 
             placeholder="Dirección de correo"

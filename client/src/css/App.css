@@ -15,6 +15,9 @@
   text-decoration: none;
   color:white;
 }
+.App  header h1{
+  font-weight: bold;
+}
 .App a:hover{
   text-decoration: none;
   color:rgb(150, 150, 150);

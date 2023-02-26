@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState} from 'react';
 import {Login} from "./pages/Login";
 import {Register} from "./pages/Register";
-import { Stats } from './components/Stats';
 import {BsFillPersonFill,BsBoxArrowLeft,BsFillCaretRightSquareFill} from "react-icons/bs";
 import "./css/App.css";
 import Axios from "axios";
@@ -18,38 +17,21 @@ function App() {
 }
 function Home(){
   let navigate = useNavigate();
+  let [stats,setStats] = useState([]);
   
+  const recibirDatos = ()=>{
+    Axios.get("http://localhost:3001/stats").then(response=>{
+        setStats(response.data)
+    })
+  }
+  useEffect(()=>{        
+    recibirDatos();
 
-  const words = [
-    "árbol", "animal", "avisan","amarillo","amistad","antena", "asno", "altura", "arte","arrojar","asistir","archivo","atacar",
-    "brazo", "bicicleta", "burro","birra","brutal","bestias","bocina","borde","belleza","blando","binario","beber","bebé",
-    "cazo", "creían", "chorizo", "crecer","cavernas","campo","crema","cuerpo","clase","cima","cortar", "cristiano",
-    "días", "duende","dinámico","dócil","dios","dudas", "diario","débil","diablo","dinamita","dedo","dentadura","Dinamarca",
-    "enredar","empatía","enfrentó","entretener","ética","elefante", "Etiopía","ese","ellas","emprender",
-    "fallecer", "familiares","favorito", "fuente","fantástico", "freno","fábula","Finlandia","feo",
-    "grande","gritos","grulla", "gazpacho","gamba", "ganso","girar","gato","guía","gracias",
-    "habían","hombro", "hebras", "hambre","híbrido", "hace","hábitos","Honduras","hospital","haber",
-    "ignorante","ímpetu", "independencia", "idea", "inferior","intento","interno","iterar","insignia",
-    "jabalí","jalapeño","jugadores", "jamón","justa", "jugado", "juez","Japón",
-    "kilómetro","karaoke", "kétchup", 
-    "limonada","linterna","luciérnaga", "láser","lista","lluvia","lápiz","libro","luna","leer","lagarto","lámpara","lujoso",
-    "madre","muertos","mirar", "música","mentira","marisco","mueble","manzana","misterio","magia",
-    "navidad","nogal","noche", "noche", "nietos","naranja","nación","nido","nuevo","nacimiento",
-    "ñu",
-    "ópera","ocioso","ombligo","ojo","otoño","oeste","oportunidad","orden",
-    "pirámide","palabras","puerro", "pájaro","papel","paz","página","planeta","pulgar","playa","pelea",
-    "queso","quieres","quebrar", "quinto","qué",
-    "rata","rompieron","retrasarse",
-    "sátira","sobrio","separar",
-    "trueque","trampas","tirar",
-    "uva","única","unidad",
-    "viento","verde","valioso","vida","vivo",
-    "web",
-    "xilófono",
-    "yema","yo","yendo",
-    "zapato","zumo","zote"
-  ]
-  const wordsEng = ["hello","apple"]
+  },[])
+
+  let [words, setWords] = useState([]); 
+  const [loading, setLoading] = useState(true);
+  const [wordsEng, setWordsEng] = useState([]);
   
   let [lenguage,setLenguage] = useState("Español")
   const changeLenguage = event =>{
@@ -62,15 +44,33 @@ function Home(){
       return wordsEng[Math.floor(Math.random() * wordsEng.length)];
     }
   }
-
+  useEffect(()=>{
+    fetch("/json/wordsEsp.json")
+    .then(response=>response.json())
+    .then(response=>{
+      setWords(response);
+      setLoading(false);
+    });
+    fetch("/json/wordsEng.json")
+    .then(response=>response.json())
+    .then(response=>{
+      setWordsEng(response);
+    });
+  },[])
+  
   let [word, setWord] = useState(randomWord());
   let [nextWord, setNextWord] = useState(randomWord())
-  let [userInput, setUserInput] = useState("");
+  let [userInput, setUserInput] = useState("Pulse iniciar");
   let [correct, setCorrect] = useState(0);
   let [incorrect, setIncorrect] = useState(0);
   let [score, setScore] = useState(0);
   let [key, setKey] = useState("");
-
+  useEffect(() => {
+    if (!loading) {
+      setWord(randomWord())
+      setNextWord(randomWord())
+    }
+  }, [words, loading]);
   const keyChange = event =>{ 
     setKey(event.key);
   }
@@ -86,10 +86,10 @@ function Home(){
           'Authorization': `Bearer ${token}`
         }
       })
+      .then(recibirDatos)
     }else{
       console.log("Inicie sesión para guardar sus resultados.")
     }
-    
   }
   
   let [time, setTime] = useState(60); 
@@ -97,7 +97,7 @@ function Home(){
   
   useEffect(()=>{
     if(time<1){
-      endGame();
+      endGame()
     }
   },[time])
 
@@ -155,11 +155,11 @@ function Home(){
     navigate("/login");
   }
   let user = sessionStorage.getItem("token") ?<><button>{sessionStorage.getItem("nombre")} <BsFillPersonFill/> </button><button onClick={logOut}>Salir <BsBoxArrowLeft/></button></>: <a href='/login' >Login</a>;
-
+  
   return (
     <div className="App">
       <header className="App-header row d-flex ">
-         <h1 className='col d-block ms-md-5'>Mecanografía</h1>
+         <h1 className='col d-block ms-md-5'>TypingASDF</h1>
          <div className='col d-flex justify-content-end me-md-5'>
           {user} 
          </div>
@@ -180,12 +180,12 @@ function Home(){
             </div>
                   
             <div className='row p-2'>
-              <input className='col-7 col-sm-5' disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
+              <input className='col-7 col-sm-5'  disabled type="text" value={userInput} onKeyDown={keyChange} onChange={compare} />
               <button className='col-5 col-sm-4' onClick={startGame}>Iniciar<BsFillCaretRightSquareFill className='ms-2'/> </button>  
 
             </div>
           </div>
-          <div className="col-12 col-md-4 mt-5 puntuacion">
+          <div className="col-9 col-md-4 mt-5 puntuacion">
             <div className="row puntuacionT">
               <h3>Puntuación</h3>
             </div>
@@ -193,11 +193,32 @@ function Home(){
               <p>Correctas: {correct}</p>
               <p>Incorrectas: {incorrect}</p>
             </div>
-            <div className="row">
-              <Stats></Stats>
+            
+            <div className="stats">
+              <h3 className=''>Ranking</h3>
+              <table className='table'>
+
+                  <thead>
+                      <tr >
+                          <th>#</th>
+                          <th>Usuario</th>
+                          <th>Record</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {stats.map((x, index) => (
+                      <tr  key={x.username}>
+                        <td>{index+1}</td>
+                        <td>{x.username}</td>
+                        <td>{x.bestscore}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+              </table>
+            </div>
             </div>
           </div>
-        </div>
+        
         
       </main>
     </div>

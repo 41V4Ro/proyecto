@@ -36,7 +36,7 @@ export const Register = ()=>{
         }
     }
     return (
-        <div className="login-container">
+        <div className="login-container mt-5">
       <header>
         <h1>Crear cuenta</h1>
       </header>
